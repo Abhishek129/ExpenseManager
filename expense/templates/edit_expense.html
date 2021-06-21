@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %} Add Expense {% endblock%}
+{% block customname %}{% endblock%}
+{% block body %} 
+<div class="container expense-pad">
+	<div class="">
+		<h2 class="mt-3 text-center">Edit Expense</h2>
+	</div>
+	<form id="submit" action="/expense/editExpense/?id={{data.0.tr_id}}&type=save" method="post" autocomplete="off">
+		{% csrf_token %}
+		<div class="mb-1 mt-5	">	
+			<center>
+				<div class="search"> 
+					<label for="expense" class="form-label"></label>
+					<i class="{{currency}} expense-icon" aria-hidden="true"></i>
+					<input type="number" value="{{data.0.amount}}" class="form-control input-expense shadow-none" id="expense" name='expense'>
+					
+				</div>
+			</center>
+			<div class="mb-3 mt-5">
+				<label for="category" class="form-label">Category</label>
+				<select name="category" class="user-select" id="category" >
+					<option hidden>{{data.0.category_id}}</option>
+					{% for i in categories %}
+					<option>{{i.name}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			
+			<div class="mb-3 mt-3">
+				<label for="note" class="form-label">Note</label>
+				<input type="text" class="form-control shadow-none" value="{{data.0.note}}" id="note" name='note'>
+			</div>
+			<div class="mb-3">
+				<label for="added_on" class="form-label">Date</label>
+				<input type="date" name="added_on" value="{{date}}" class="form-control shadow-none" id="added_on">
+			</div>
+
+			{% for message in messages%}
+			<span class="error-{{message.tags}}"><b>{{ message }}</b></span>
+			{% endfor %}
+
+			<div class="mb-3">
+				<input name='' hidden></input>
+				<button type="submit" id="submit" class="btn btn-primary btn-grad">SAVE</button>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block script %}
+
+<script>
+
+		// for alphanumeric only
+		jQuery.validator.addMethod("alphanumeric", function(value, element) {
+			return this.optional(element) || /^[\w.]+$/i.test(value);
+		}, "Letters, numbers, and underscores only please");
+
+		$("#submit").validate({
+			rules: {
+				expense: {
+					required:true,
+					min:1,
+				},
+				category: {
+					required:true,
+				},
+				note: {
+					required:true,
+				},
+				added_on: {
+					required:true,
+				}
+			},
+			messages: {
+				expense: {
+					required: 'Expense is Required',
+					min: 'Expense should be atleast 1',
+				},
+				category: {
+					required: 'Category is required',
+				},
+				note: {
+					required: 'Note is required',
+				},
+				added_on: {
+					required: 'Date is required',
+				}
+			}
+		});
+
+	</script>
+	{% endblock%}

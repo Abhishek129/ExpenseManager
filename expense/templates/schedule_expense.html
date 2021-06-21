@@ -1,0 +1,253 @@
+
+{% extends 'base.html' %}
+{% block title %} Schedule Expense {% endblock%}
+{% block active %}
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/dashboard/"><i class="fa fa-tachometer"></i>Dashboard</a>
+</li>
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/manageExpense/"><i class="fa fa-cog"></i>Manage Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/addExpense/"><i class="fa fa-plus"></i>Add Expense</a>
+</li>
+<li class="nav-item active">
+	<a class="nav-link" href="/expense/scheduleExpense/"><i class="fa fa-calendar"></i>Schedule Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/setting/"><i class="fa fa-cogs"></i>Setting</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/logout/"><i class="fa fa-sign-out"></i>Logout</a>
+</li> 
+{% endblock%}
+{% block body %} 	
+<div class="container mt-4">
+	<div class="expense">
+		<div class="p-head logo-color">Schedule Expense</div>
+		<div class="search mt-3"> 
+			<input type="text" class="form-control shadow-none" placeholder="Search.."> 
+			<i class="fa fa-search search-icon"></i>
+		</div>
+		<div class="float-right mt-3" title="Add Schedule Expense">
+			<button type="submit" class="btn btn-grad-other" data-bs-toggle="modal" data-bs-target="#scheduleExpense"><i class="fa fa-plus" aria-hidden="true"></i></button>
+		</div>
+		
+		{% if expenses|length == 0%}
+		{% for message in messages%}
+		<div class="mt-5"><span class="error-{{message.tags}} not-found">{{ message }}</span></div>
+		{% endfor %}
+		{% else %}
+		<!-- //for md and lg device -->
+		<div class="mt-5 px-2 lg-dark-color d-none d-lg-block d-md-block">
+			<div class="row">
+				<div class="col-6">
+					<h6><i>Recent Schedule Expense</i></h6>
+				</div>
+				<div class="col-6 text-end">
+					<h6 class="text-danger ">Warning : All action is permanent</h6>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- //for sm device -->
+		<div class="mt-5 px-2 lg-dark-color d-block d-lg-none d-md-none">
+			<h6><i>Recent Schedule Expense</i></h6>			
+		</div>
+
+		<!-- //for md and lg device -->
+		<div class="d-none d-lg-block d-md-block">
+			{% for i in expenses%}
+			<div id='test' class="row g-4 mb-4"style="width: 100%" >
+				<div class="col-12 p-2 custom-row bg-dark">
+					<span class='text-capitalize mx-2 logo-color'>{{i.repeat}}</span>
+					<div class="row mt-3">
+						<div class="col-2 text-center">
+							<button class="btn btn-dark cus-icon icon-btn {{i.category_id}}">
+								<i class="{{i.category_id.iconname}} icon-content " aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-5 category px-5" title="Edit Expense">
+							<a href="/expense/editScheduleExpense?id={{i.sc_id}}&type=edit" >
+								<span class='text-capitalize'>{{i.category_id}}
+									<div class="custom-row-foter">{{i.note}}</div>
+								</span>
+							</a>
+						</div>
+						<div class="col-3 text-center">
+							<span><i class="{{currency}}" aria-hidden="true"></i>{{i.amount}} <div class="custom-row-foter">{{i.added_on}}</div></span>
+						</div>
+						<div class="col-2 text-center" title="Delete Expense">
+							<a href="/expense/editScheduleExpense?id={{i.sc_id}}&type=clear">
+								<button class="btn shadow-none" ><i class="fa fa-trash-o" style="color:red;font-size: 17px;" aria-hidden="true"></i></button>
+							</a>
+						</div>
+					</div>
+				</div>	
+			</div>
+			{% endfor %}
+		</div>
+		<!-- //for sm device -->
+		<div class="d-block d-lg-none d-md-none">
+			{% for i in expenses%}
+			<div id='test' class="row g-4 mb-4"style="width: 100%" >
+				<div class="col-12 p-2 custom-row bg-dark">
+					<span class='text-capitalize mx-2 logo-color'>{{i.repeat}}</span>
+					<div class="row mt-3">
+						<div class="col-2 text-center">
+							<button class="btn btn-dark cus-icon icon-btn food">
+								<i class="fa fa-cutlery icon-content" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-5 category px-5" title="Edit Expense">
+							<a href="/expense/editScheduleExpense?id={{i.sc_id}}&type=edit" >
+								<span class='text-capitalize'>{{i.category_id}}
+									<div class="custom-row-foter">{{i.note}}</div>
+								</span>
+							</a>
+						</div>
+						<div class="col-3 text-center">
+							<span><i class="{{currency}}" aria-hidden="true"></i>{{i.amount}} <div class="custom-row-foter">{{i.added_on}}</div></span>
+						</div>
+						<div class="col-2 text-center" title="Delete Expense">
+							<a href="/expense/editScheduleExpense?id={{i.sc_id}}&type=clear">
+								<button class="btn shadow-none" ><i class="fa fa-trash-o" style="color:red;font-size: 17px;" aria-hidden="true"></i></button>
+							</a>
+						</div>
+					</div>
+				</div>	
+			</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+
+		<!-- Category-Modal -->
+		<div class="modal fade " id="scheduleExpense" tabindex="-1" aria-labelledby="scheduleExpenseLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content modal-color">
+					<div class="modal-header">
+						<h5 class="modal-title" id="scheduleExpenseLabel">SCHEDULE EXPENSE</h5>
+						<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+					</div>
+					<form id="schedule_expense" action="/expense/scheduleExpense/?type=add_schedule" method="post" autocomplete="off">
+						{% csrf_token %}
+						<div class="custom-body px-4">
+							<center>
+								<div class="cur-icon"> 
+									<label for="expense" class="form-label"></label>
+									<span><i class="{{currency}} expense-icon" aria-hidden="true"></i></span>
+									<input type="number" value="0" class="form-control input-expense shadow-none" id="expense" name='expense'>
+								</div>
+							</center>
+							<div class="mb-3 mt-3">
+								<label for="category" class="form-label">Category</label>
+								<select name="category" class="user-select" id="category">
+									{% for i in categories %}
+									<option>{{ i.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="mb-3 mt-3">
+								<label for="note" class="form-label">Note</label>
+								{% for i in data %}
+								<span>i.amount</span>
+								{% endfor %}
+								<input type="text" class="form-control shadow-none" id="note" name='note'>
+
+							</div>
+							<div class="mb-3">
+								<label for="added_on" class="form-label">Date</label>
+								<input type="date" name="added_on" class="form-control shadow-none" id="added_on">
+							</div>
+
+							<div class="mb-3">
+								<label for="repeat" class="form-label">Repeat</label>
+								<select name="repeat" class="user-select" id="repeat">
+									<option>No Repeat</option>
+									<option>Every Day</option>
+									<option>Every Week</option>
+									<option>Every Month</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="mt-3 custom-footer">
+							<div class="mt-3 text-end">
+								<button type="submit" class="btn btn-success">Add</button>
+								<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+
+<script>
+	var added_on = document.querySelector('#added_on');
+	var date = new Date();
+
+	added_on.value = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) + 
+	'-' + date.getDate().toString().padStart(2, 0);
+
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; 
+	var yyyy = today.getFullYear();
+	if(dd<10)
+	{
+		dd='0'+dd
+	} 
+	if(mm<10)
+	{
+		mm='0'+mm
+	} 
+	today = yyyy+'-'+mm+'-'+dd;
+	
+	document.getElementById("added_on").setAttribute("min", today);
+
+	$("#schedule_expense").validate({
+		rules: {
+			expense: {
+				required:true,
+				min:1,
+			},
+			category: {
+				required:true,
+			},
+			note: {
+				required:true,
+			},
+			added_on: {
+				required:true,
+			},
+			repeat: {
+				required:true,
+			}
+		},
+		messages: {
+			expense: {
+				required: 'Expense is required',
+				min: 'Expense should be be atleast 1',
+			},
+			category: {
+				required: 'Category is required',
+			},
+			note: {
+				required: 'Note is required',
+			},
+			added_on: {
+				required: 'Date is required',
+			},
+			repeat : {
+				required: 'Repeat is required',
+			}
+		}
+	});
+
+</script>
+{% endblock%}

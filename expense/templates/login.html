@@ -1,0 +1,77 @@
+{% extends 'model.html' %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<div class="container mypad">
+	<div class="mt-5">
+		<center><img src="/static/img/logo.png" alt="Logo" width="200" height="200" class="d-inline-block align-text-center"></center>
+		<h2 class="mt-3 text-center"><i class="fa fa-lock custom-icon" aria-hidden="true"></i> Log in</h2>
+	</div>
+	<form id="submit" action="/expense/login/" method="post" autocomplete="off">
+		{% csrf_token %}
+
+		<div class="mb-3">
+			<label for="username" class="form-label">Username</label>
+			<input type="text" class="form-control shadow-none" id="username" name='username'>
+		</div>
+		<div class="mb-3">
+			<label for="password" class="form-label">Password</label>
+			<input type="password" name="password" class="form-control shadow-none" id="password">
+		</div>
+
+		{% for message in messages%}
+		<span class="error-{{message.tags}}"><b>{{ message }}</b></span>
+		{% endfor %}
+
+		<div class="mb-3">
+			<input name='' hidden></input>
+			<button type="submit" id="submit" class="btn btn-primary btn-grad">Log In</button>
+		</div>
+	</form>
+	<div class="mb-3">
+		Don't have an Account? <a href="{% url 'register' %}" class="alreadylogin"><b>Sign up</b></a>
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+
+<script>
+
+		// for alphanumeric only
+		jQuery.validator.addMethod("alphanumeric", function(value, element) {
+			return this.optional(element) || /^[\w.]+$/i.test(value);
+		}, "Letters, numbers, and underscores only please");
+
+		$("#submit").validate({
+			rules: {
+				username: {
+					required:true,
+					alphanumeric:true,
+					maxlength:10
+				},
+				password: {
+					required:true,
+					minlength:8
+				}
+			},
+			messages: {
+				username: {
+					required: 'Username is Required',
+					alphanumeric : 'Only letter,underscore and numbers is allowed',
+					maxlength:'Username should of atleast 10 character'
+				},
+				password: {
+					required: 'Password is required',
+					minlength: 'Password should of atleast 8 character'
+				}
+
+			}
+		});
+
+		{% comment %} {% if flag %}
+		alert("Login Successful");
+		{% else %}
+		alert("Login Unsuccessful");
+		{% endif %} {% endcomment %}
+
+	</script>
+	{% endblock %}

@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% block title %} Home {% endblock%}
+{% block head %} 
+
+
+{% endblock%}
+{% block active %}
+
+<li class="nav-item active">
+	<a class="nav-link" href="/expense/dashboard/"><i class="fa fa-tachometer"></i>Dashboard</a>
+</li>
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/manageExpense/"><i class="fa fa-cog"></i>Manage Expense</a>
+</li>
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/addExpense/"><i class="fa fa-plus"></i>Add Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/scheduleExpense/"><i class="fa fa-calendar"></i>Schedule Expense</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" href="/expense/setting/"><i class="fa fa-cogs"></i>Setting</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/logout/"><i class="fa fa-sign-out"></i>Logout</a>
+</li> 
+{% endblock%}
+{% block body %}
+
+
+<div class="container mt-5">
+	
+	<div class="p-head logo-color">Dashboard</div>
+	<div class="expense expense-card">
+		
+		<div class="row mt-5">
+			<div class="col-4 stats"> 
+				<canvas  id="last_seven_day" ></canvas>
+			</div>
+
+			<div class="col-4 stats"> 
+				<canvas id="monthly"></canvas>
+			</div>
+			<div class="col-4 stats"> 
+				<canvas id="yearly"></canvas>
+			</div>
+		</div>
+		<div class="row mt-5">
+			<div class="col-3 stats"><b><h5 > Total Budget : <span class="logo-color">{{budget}}.00</span></h5></b></div>
+			<div class="col-4 stats"><b><h5 > Remaining Budget : <span class="logo-color">{{rem_budget}}.00</span></h5></b></div>
+			<div class="col-3 stats"><h5 > No of Expenses : <span class="logo-color">{{no_of_expenses}}</span></h5></div>
+			<div class="col-2 stats"><h5 > Total : <span class="logo-color">{{total_expense}}.00</span></h5></div>
+		</div>
+		
+		{% if expenses|length == 0%}
+		
+		{% for message in messages%}
+		<div class="mx-3 mt-4"><span class="error-{{message.tags}} not-found ">{{ message }}</span></div>
+		{% endfor %}
+		{% else %}
+		<div class=" mt-3">
+			<div class="row ">
+				<div class="col-6 " >
+					<h6 class="lg-dark-color "><i>Recent Transactions</i></h6>
+				</div>
+				<div class="col-6 text-end">
+					<a href="/expense/manageExpense/"><h6 class=" viewall lg-dark-color ">View All</h6></a>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div id="mytest" class="">
+			<div id='test' class="mb-2" >
+				<div class="py-2">
+					<table class="" id="myTable">
+						{% for i in expenses%}
+						{% if forloop.counter <= 5%}
+						<tr class="mt-5 bg-dark">
+							<td style="width: 15%">
+								<div class="text-center">
+									<button class="btn btn-dark cus-icon icon-btn {{i.category_id}}">
+										<i class="{{i.category_id.iconname}} icon-content " aria-hidden="true"></i>
+									</button>
+								</div>
+							</td>
+							<td style="width: 50%">
+								<div class="category" title="Edit Expense">
+									<a href="/expense/editExpense?id={{i.tr_id}}&type=edit" >
+										<span class='text-capitalize'>{{i.category_id}}
+											<div class="custom-row-foter">{{i.note}}</div>
+										</span>
+									</a>
+								</div>
+							</td>
+							<td style="width: 30%">
+								<div class="text-center">
+									<span><i class="{{currency}}" aria-hidden="true"></i>{{i.amount}} <div class="custom-row-foter">{{i.added_on}}</div></span>
+								</div>
+							</td>
+							<td style="width: 5%">
+								<div class="text-center" title="Delete Expense">
+									<a href="/expense/editExpense?id={{i.tr_id}}&type=clear">
+										<button class="btn shadow-none" ><i class="fa fa-trash-o" style="color:red;font-size: 17px;" aria-hidden="true"></i></button>
+									</a>
+								</div>
+							</td>
+
+
+						</tr>
+						{% endif %}
+						{% endfor %}
+					</table>
+					<center><div class="col-12 bg-dark p-2 custom-row" id="data-not-found">
+						<span>Data Not found</span>
+					</div>
+				</center>
+			</div>	
+		</div>		
+		
+		{% endif %}
+	</div>
+</div>
+{% endblock%}
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script type="text/javascript">
+	var year = {
+		type: 'bar',
+		axisX:{
+			gridThickness: 3,
+			gridColor: "orange"
+		},
+		data: {
+			datasets: [{
+				data: {{ graph.yearly_data|safe }},
+				backgroundColor: 'DeepSkyBlue',
+				label: 'Last 5 Year',
+				borderWidth: 1
+			}],
+			labels: {{ graph.yearly_labels|safe }}
+		},
+		options: { 
+			legend: {
+				labels: {
+					fontColor: "white",
+					fontSize: 14
+				}
+			},
+			scales: {
+				yAxes: [{
+					gridColor: "white",
+					ticks: {
+						fontColor: "white",
+						fontSize: 15,
+						stepSize: 2000,
+						beginAtZero: true,
+					}
+				}],
+				xAxes: [{
+					barPercentage: 0.5,
+					categoryPercentage: 1.0,
+					gridColor: "white",
+					ticks: {
+						fontColor: "white",
+						fontSize: 15,
+						stepSize: 1,
+
+						barPercentage: 0.5,
+
+						beginAtZero: true
+					}
+				}]
+			}
+		}
+	};
+
+	var seven = {
+		type: 'bar',
+		axisX:{
+			gridThickness: 3,
+			gridColor: "orange"
+		},
+		data: {
+			datasets: [{
+				data: {{ graph.last_week_data|safe }},
+				backgroundColor: 'limegreen',
+				label: 'Last 7 days',
+				borderWidth: 1
+			}],
+			labels: {{ graph.last_week_labels|safe }}
+		},
+		options: { 
+			legend: {
+				labels: {
+					fontColor: "white",
+					fontSize: 14
+				}
+			},
+			scales: {
+				yAxes: [{
+					gridColor: "white",
+					ticks: {
+						fontColor: "white",
+						fontSize: 15,
+						stepSize: 500,
+						beginAtZero: true,
+					}
+				}],
+				xAxes: [{
+					barPercentage: 0.5,
+					categoryPercentage: 1.0,
+					gridColor: "white",
+					ticks: {
+						fontColor: "white",
+						fontSize: 15,
+						stepSize: 1,
+
+						barPercentage: 0.5,
+
+						beginAtZero: true
+					}
+				}]
+			}
+		}
+	};
+
+	var monthly = {
+		type: 'bar',
+		axisX:{
+			gridThickness: 3,
+			gridColor: "orange"
+		},
+		data: {
+			datasets: [{
+				data: {{ graph.monthly_data|safe }},
+				backgroundColor: 'DarkOrange',
+				label: 'Expense of 2021',
+				borderWidth: 1
+			}],
+			labels: {{ graph.monthly_labels|safe }}
+		},
+		options: { 
+			legend: {
+				labels: {
+					fontColor: "white",
+					fontSize: 14
+				}
+			},
+			scales: {
+				yAxes: [{
+					gridColor: "white",
+					ticks: {
+						fontColor: "white",
+						fontSize: 15,
+						stepSize: 1500,
+						beginAtZero: true,
+					}
+				}],
+				xAxes: [{
+					barPercentage: 0.5,
+					categoryPercentage: 1.0,
+					gridColor: "white",
+					ticks: {
+						fontColor: "white",
+						fontSize: 15,
+						stepSize: 1,
+						barPercentage: 0.5,
+						beginAtZero: true
+					}
+				}]
+			}
+		}
+	};
+
+	window.onload = function() {
+		var ctx = document.getElementById('yearly').getContext('2d');
+		window.myPie = new Chart(ctx, year);
+
+		var ctx = document.getElementById('last_seven_day').getContext('2d');
+		window.myPie = new Chart(ctx, seven);
+		var ctx = document.getElementById('monthly').getContext('2d');
+		window.myPie = new Chart(ctx, monthly);
+	};
+</script>
+{% endblock%}

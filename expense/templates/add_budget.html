@@ -1,0 +1,45 @@
+
+{% extends 'base.html' %}
+{% block title %} Add Budget {% endblock%}
+{% block customname %}{% endblock%}
+{% block body %} 
+<div class="container expense-pad">
+	<div class="">
+		<h2 class="mt-3 text-center">Add Budget</h2>
+	</div>
+	<form id="submit" action="/expense/addBudget/" method="post" autocomplete="off">
+		{% csrf_token %}
+		<div class="mb-1">	
+			<center>
+				<div class="search"> 
+					<label for="budget" class="form-label"></label>
+					<input type="number" value="0" class="form-control input-expense shadow-none" id="budget" name='budget'>
+					<i class="fa fa-usd expense-icon" aria-hidden="true"></i>
+				</div>
+			</center>
+			<div class="mt-3">
+				<input name='' hidden></input>
+				<button type="submit" id="submit" class="btn btn-primary btn-grad">ADD</button>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block script %}
+
+<script>
+
+	$("#save").validate({
+		rules: {
+			budget: {
+				required:true,
+			}
+		},
+		messages: {
+			budget: {
+				required: 'Budget is Required',
+			}
+		}
+	});
+</script>
+{% endblock%}

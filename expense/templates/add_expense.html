@@ -1,0 +1,137 @@
+
+{% extends 'base.html' %}
+{% block title %} Add Expense {% endblock%}
+{% block active %}
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/dashboard/"><i class="fa fa-tachometer"></i>Dashboard</a>
+</li>
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/manageExpense/"><i class="fa fa-cog"></i>Manage Expense</a>
+</li>
+<li class="nav-item active">
+	<a class="nav-link" href="/expense/addExpense/"><i class="fa fa-plus"></i>Add Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/scheduleExpense/"><i class="fa fa-calendar"></i>Schedule Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/setting/"><i class="fa fa-cogs"></i>Setting</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/logout/"><i class="fa fa-sign-out"></i>Logout</a>
+</li> 
+{% endblock%}
+{% block body %} 
+<div class="container app-expense-pad mt-4">
+	<div class="expense">
+		<center><div class="p-head logo-color">Add Expense</div></center>
+	</div>
+	<form id="save" action="/expense/addExpense/" method="post" autocomplete="off">
+		{% csrf_token %}
+		<div class="mb-1 mt-3">	
+			<center>
+				<div class="search cur-icon"> 
+					<label for="expense" class="form-label"></label>
+					<span><i class="{{currency}} expense-icon" aria-hidden="true"></i></span>
+					<input type="number" value="0" class="form-control input-expense shadow-none" id="expense" name='expense'>	
+				</div>
+			</center>
+			<div class="mb-3 mt-5">
+				<label for="category" class="form-label">Category</label>
+				<select name="category" class="user-select" id="category">
+					{% for i in categories %}
+					<option>{{ i.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="mb-3 mt-3">
+				<label for="note" class="form-label">Note</label>
+				{% for i in data %}
+				<span>i.amount</span>
+				{% endfor %}
+				<input type="text" class="form-control shadow-none" id="note" name='note'>
+				
+			</div>
+			<div class="mb-3">
+				<label for="added_on" class="form-label">Date</label>
+				<input type="date" name="added_on" class="form-control shadow-none" id="added_on">
+			</div>
+
+			{% for message in messages%}
+			<span class="error-{{message.tags}}"><b>{{ message }}</b></span>
+			{% endfor %}
+
+			<div class="mb-3">
+				<input name='' hidden></input>
+				<button type="submit" id="submit" class="btn btn-primary btn-grad">ADD</button>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}
+{% block script %}
+
+<script>
+	var added_on = document.querySelector('#added_on');
+	var date = new Date();
+
+	added_on.value = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) + 
+	'-' + date.getDate().toString().padStart(2, 0);
+
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; 
+	var yyyy = today.getFullYear();
+	if(dd<10)
+	{
+		dd='0'+dd
+	} 
+	if(mm<10)
+	{
+		mm='0'+mm
+	} 
+	today = yyyy+'-'+mm+'-'+dd;
+	
+	document.getElementById("added_on").setAttribute("max", today);
+
+		// for alphanumeric only
+		jQuery.validator.addMethod("alphanumeric", function(value, element) {
+			return this.optional(element) || /^[\w.]+$/i.test(value);
+		}, "Letters, numbers, and underscores only please");
+
+
+		$("#save").validate({
+			rules: {
+				expense: {
+					required:true,
+					min:1,
+				},
+				category: {
+					required:true,
+				},
+				note: {
+					required:true,
+				},
+				added_on: {
+					required:true,
+				}
+			},
+			messages: {
+				expense: {
+					required: 'Expense is Required',
+					min: 'Expense should be atleast 1',
+				},
+				category: {
+					required: 'Category is required',
+				},
+				note: {
+					required: 'Note is required',
+				},
+				added_on: {
+					required: 'Date is required',
+				}
+			}
+		});
+
+	</script>
+	{% endblock%}

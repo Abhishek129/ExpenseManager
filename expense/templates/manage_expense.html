@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% block title %} Manage Expense {% endblock%}
+{% block active %}
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/dashboard/"><i class="fa fa-tachometer"></i>Dashboard</a>
+</li>
+<li class="nav-item active">
+	<a class="nav-link" href="/expense/manageExpense/"><i class="fa fa-cog"></i>Manage Expense</a>
+</li>
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/addExpense/"><i class="fa fa-plus"></i>Add Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/scheduleExpense/"><i class="fa fa-calendar"></i>Schedule Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/setting/"><i class="fa fa-cogs"></i>Setting</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/logout/"><i class="fa fa-sign-out"></i>Logout</a>
+</li> 
+{% endblock%}
+{% block body %} 
+
+<div class="container">
+	<div class="expense">
+		<div class="search mt-4 form-search"> 
+			<input type="text" id="searchdata" onkeyup="myFunction()" class="form-control shadow-none" placeholder="Search.."> 
+			<i class="fa fa-search search-icon"></i>
+		</div>
+		<div class="expense-card d-none d-lg-block d-md-block mt-4">
+
+			<div class="p-head logo-color">Manage Expense</div>
+			<div class="row mt-3">	
+				<div class="col-4">
+					<div class="card custom-card mt-3 card2 card-width" >
+						<div class="card-body">
+							<h6 class="card-title text-center">No of expenses</h6>
+							<h1 class="card-text text-center">{{no_of_expenses}}</h1>
+						</div>
+					</div>
+				</div>
+				<div class="col-4">
+					<div class="card custom-card mt-3 card-width">
+						<div class="card-body">
+							<h6 class="card-title text-center">Remaining Budget</h6>
+							<h1 class="card-text text-center">{{rem_budget}}.00</h1>
+						</div>
+					</div>
+				</div>
+				<div class="col-4">
+					<div class="card custom-card mt-3 card3 card-width">
+						<div class="card-body">
+							<h6 class="card-title text-center">Total</h6>
+							<h1 class="card-text text-center">{{total_expense}}.00</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="mt-3 d-block d-lg-none d-md-none text-center expense-sm-title">
+			<h2>{{no_of_expenses}} Expenses Totalling <span class="total-expense">{{total_expense}}.00</span>
+			</h2>
+		</div>
+		
+		
+		<div class=" mt-2">
+			<a href="/expense/manageExpense/"><button type="button" class="btn btn-dark topbutton custom-icon iconbutton py-2 mx-2 mt-2" id="overview">Default</button></a>
+
+			<a href="/expense/manageExpense?filter=date"><button type="button" class="btn btn-dark topbutton custom-icon iconbutton py-2 mx-2 mt-2" id="overview">By date</button></a>
+
+			<a href="/expense/manageExpense?filter=month"><button type="button" class="btn btn-dark topbutton custom-icon iconbutton py-2 mx-2 mt-2" id="overview">By month</button></a>
+
+			<a href="" data-bs-toggle="modal" data-bs-target="#category"><button type="button" class="btn btn-dark topbutton custom-icon iconbutton py-2 mx-2 mt-2" id="overview">By category</button></a>
+
+			<a href="/expense/manageExpense?filter=expense"><button type="button" class="btn btn-dark topbutton custom-icon iconbutton py-2 mx-2 mt-2" id="overview">By Expense</button></a>
+
+			<a href="" data-bs-toggle="modal" data-bs-target="#datarange"><button type="button" class="btn btn-dark topbutton custom-icon iconbutton py-2 mx-2 mt-2" id="overview">By Date range</button></a>
+		</div>
+		{% if expenses|length == 0%}
+		{% for message in messages%}
+		<div class="mx-3 mt-4"><span class="error-{{message.tags}} not-found ">{{ message }}</span></div>
+		{% endfor %}
+		{% else %}
+		<div class="mt-4">
+			<h6>Filter :<span class="lg-dark-color">{{datafilter}}</span></h6>
+			<div class="row lg-dark-color mt-4"> 
+				<div class="col-6">
+					<h6><i>Recent Transactions</i></h6>
+				</div>
+
+				<div class="col-6 text-end">
+					<h6 class="text-danger ">Warning : All action is permanent</h6>
+				</div>
+			</div>
+		</div>
+
+		<!-- //for md and lg device -->
+		<div id="mytest" class="">
+			<div id='test' class="mb-2" >
+				<div class="py-2">
+					<table class="" id="myTable">
+						{% for i in expenses%}
+						<tr class="mt-5 bg-dark">
+							<td style="width: 15%">
+								<div class="text-center">
+									<button class="btn btn-dark cus-icon icon-btn {{i.category_id}}">
+										<i class="{{i.category_id.iconname}} icon-content " aria-hidden="true"></i>
+									</button>
+								</div>
+							</td>
+							<td style="width: 50%">
+								<div class="category" title="Edit Expense">
+									<a href="/expense/editExpense?id={{i.tr_id}}&type=edit" >
+										<span class='text-capitalize'>{{i.category_id}}
+											<div class="custom-row-foter">{{i.note}}</div>
+										</span>
+									</a>
+								</div>
+							</td>
+							<td style="width: 30%">
+								<div class="text-center">
+									<span><i class="{{currency}}" aria-hidden="true"></i>{{i.amount}} <div class="custom-row-foter">{{i.added_on}}</div></span>
+								</div>
+							</td>
+							<td style="width: 5%">
+								<div class="text-center" title="Delete Expense">
+									<a href="/expense/editExpense?id={{i.tr_id}}&type=clear">
+										<button class="btn shadow-none" ><i class="fa fa-trash-o" style="color:red;font-size: 17px;" aria-hidden="true"></i></button>
+									</a>
+								</div>
+							</td>
+
+
+						</tr>
+						{% endfor %}
+					</table>
+					<center><div class="col-12 bg-dark p-2 custom-row" id="data-not-found">
+						<span>Data Not found</span>
+					</div>
+				</center>
+			</div>	
+		</div>			
+	</div>
+
+	{% endif %}
+</div>
+</div>
+
+<!-- selectcategory -->
+<div class="modal fade " id="category" tabindex="-1" aria-labelledby="categoryLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content modal-color">
+			<div class="modal-header">
+				<h5 class="modal-title" id="categoryLabel">SELECT CATEGORY</h5>
+				<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+			</div>
+			<form id="submit_currency" action="/expense/manageExpense/?filter=category" method="post" autocomplete="off">
+				{% csrf_token %}
+				<div class="custom-body">
+					{% for i in categories %}
+					{%if forloop.counter <= 1%}
+					<div class="form-check">
+						<input class="form-check-input" type="radio" value="{{i.name}}" name="selectedcategory" id="{{i.name}}" checked="">
+						<label class="for m-check-label" for="INR">
+							<span>{{i.name}}</span>
+						</label>
+					</div>
+					{%else%}
+					<div class="form-check">
+						<input class="form-check-input" type="radio" value="{{i.name}}" name="selectedcategory" id="{{i.name}}">
+						<label class="for m-check-label" for="INR">
+							<span>{{i.name}}</span>
+						</label>
+						
+					</div>
+					{%endif%}
+					{% endfor %}
+				</div>
+				<div class="mt-3 mb-2 custom-footer">
+					<div class="mt-3 text-end">
+						<button type="submit" class="btn btn-success">Select</button>
+						<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- select Data Range -->
+<div class="modal fade " id="datarange" tabindex="-1" aria-labelledby="datarangeLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content modal-color">
+			<div class="modal-header">
+				<h5 class="modal-title" id="datarangeLabel">SELECT DATE</h5>
+				<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+			</div>
+			<form id="submit_datarange" action="/expense/manageExpense/?filter=datarange" method="post" autocomplete="off">
+				{% csrf_token %}
+				<div class="custom-body">
+					<div class="mb-3">
+						<label for="start_date" class="form-label">Starting Date</label>
+						<input type="date" name="start_date" class="form-control shadow-none" id="start_date">
+					</div>
+					<div class="mb-3">
+						<label for="end_date" class="form-label">Ending Date</label>
+						<input type="date" name="end_date" class="form-control shadow-none" id="end_date">
+					</div>
+					
+				</div>
+				<div class="mt-3 mb-2 custom-footer">
+					<div class="mt-3 text-end">
+						<button type="submit" class="btn btn-success">Save</button>
+						<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock%}
+{% block script %}
+<script>
+	var added_on = document.querySelector('#end_date');
+	var date = new Date();
+
+	added_on.value = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) + 
+	'-' + date.getDate().toString().padStart(2, 0);
+
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; 
+	var yyyy = today.getFullYear();
+	if(dd<10)
+	{
+		dd='0'+dd
+	} 
+	if(mm<10)
+	{
+		mm='0'+mm
+	} 
+	today = yyyy+'-'+mm+'-'+dd;
+	
+	document.getElementById("end_date").setAttribute("max", today);
+
+	$("#submit_datarange").validate({
+		rules: {
+			start_date: {
+				required:true,
+			},
+			end_date: {
+				required:true,
+			}
+		},
+		messages: {
+			start_date: {
+				required: 'Starting Date is required',
+			},
+			end_date: {
+				required: 'Ending Date is required',
+			}
+		}
+	});
+
+	function myFunction() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("searchdata");
+		notfound = document.getElementById("data-not-found");
+
+		filter = input.value.toUpperCase();
+		table = document.getElementById("myTable");
+		tr = table.getElementsByTagName("tr");
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[1];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+					notfound.style.display="none";
+				} else {
+					tr[i].style.display = "none";
+					// notfound.style.display="block";
+				}
+			}       
+		}
+	}
+</script>
+{% endblock%}

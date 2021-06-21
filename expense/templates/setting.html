@@ -1,0 +1,418 @@
+
+{% extends 'base.html' %}
+{% block title %}Setting{% endblock%}
+{% block active %}
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/dashboard/"><i class="fa fa-tachometer"></i>Dashboard</a>
+</li>
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/manageExpense/"><i class="fa fa-cog"></i>Manage Expense</a>
+</li>
+<li class="nav-item ">
+	<a class="nav-link" href="/expense/addExpense/"><i class="fa fa-plus"></i>Add Expense</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/scheduleExpense/"><i class="fa fa-calendar"></i>Schedule Expense</a>
+</li>
+<li class="nav-item active">
+	<a class="nav-link" href="/expense/setting/"><i class="fa fa-cogs"></i>Setting</a>
+</li>
+<li class="nav-item">
+	<a class="nav-link" href="/expense/logout/"><i class="fa fa-sign-out"></i>Logout</a>
+</li> 
+{% endblock%}
+{% block body %}
+{% load static %}
+<div class="container expense-pad mt-4">
+	{% for message in messages%}
+	<div class="alert alert-success alert-dismissible fade show" role="alert">
+		<span>{{ message }}</span>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+	{% endfor %}
+	<div class="px-3">
+		<div class="p-head logo-color">Settings</div>
+		<div class="account">
+			<div class="p-title mt-5">Account</div>
+			<div class="mt-3">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn food shadow-none acc-icon text-center">
+							<i class="fa fa-user" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content">{{data.0.first_name}}{{data.0.last_name}}<div class="custom-row-foter">Personal info</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<a href="/expense/editUser?id={{user_id}}&type=edit" >
+							<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-3">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn health shadow-none acc-icon text-center">
+							<i class="fa fa-undo" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content">Reset Password<div class="custom-row-foter">Personal info</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+							<i class="fa fa-angle-right" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="preference">
+			<div class="p-title mt-5">Preferences</div>
+			<div class="mt-3">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn transportation shadow-none acc-icon text-center">
+							<i class="fa fa-pencil" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content"><i class="{{currency}}" aria-hidden="true"></i><div class="custom-row-foter">Currency</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<a href="" data-bs-toggle="modal" data-bs-target="#currency">
+							<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-3">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn shopping shadow-none acc-icon text-center">
+							<i class="fa fa-plus" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content">Add Category<div class="custom-row-foter">Personalize</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<a href="" data-bs-toggle="modal" data-bs-target="#addcategory">
+							<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-3">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn education shadow-none acc-icon text-center">
+							<i class="fa fa-plus" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content">{{budget}}<div class="custom-row-foter">Budget</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<a href="" data-bs-toggle="modal" data-bs-target="#addbudget">
+							<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-3">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn grocery shadow-none acc-icon text-center">
+							<i class="fa fa-trash" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content">Clear all Expenses<div class="custom-row-foter">Warning : This action is permanent</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<a href="" data-bs-toggle="modal" data-bs-target="#clrexpense">
+							<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-3 mb-4">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn transportation shadow-none acc-icon text-center">
+							<i class="fa fa-floppy-o" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content">Back Up<div class="custom-row-foter">Backup All expenses</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<a href="" data-bs-toggle="modal" data-bs-target="#backupExpense">
+							<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-3 mb-4">
+				<div class="row">
+					<div class="col-3 text-center">
+						<button class="btn btn-acc icon-btn bills shadow-none acc-icon text-center">
+							<i class="fa fa-repeat" aria-hidden="true"></i>
+						</button>
+					</div>
+					<div class="col-7">
+						<span class="p-content">Restore<div class="custom-row-foter">Restore All Expenses</div></span>
+					</div>
+					<div class="col-2 text-center">
+						<a href="" data-bs-toggle="modal" data-bs-target="#restoreExpense">
+							<button class="btn btn-arrow shadow-none acc-icon-arrow ">
+								<i class="fa fa-angle-right" aria-hidden="true"></i>
+							</button>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Budget-Modal -->
+		<div class="modal fade " id="addbudget" tabindex="-1" aria-labelledby="addbudgetLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content modal-color">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addbudgetLabel">ADD BUDGET</h5>
+						<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+					</div>
+					<form id="submit_budget" action="/expense/addBudget/" method="post" autocomplete="off">
+						{% csrf_token %}
+						<center>
+							<div class="custom-body">
+								<div class="search mb-2 cur-icon">
+									<label for="budget" class="form-label"></label>
+									<span><i class=" {{currency}} expense-icon" aria-hidden="true"></i></span>
+									<input type="number" value="0" class="form-control input-expense shadow-none" id="budget" name='budget'>
+								</div>
+							</div>
+						</center>
+						<div class="custom-footer">
+							<div class="mt-3 text-end">
+								<button type="submit" class="btn btn-success">Add</button>
+								<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Category-Modal -->
+		<div class="modal fade " id="addcategory" tabindex="-1" aria-labelledby="addcategoryLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content modal-color">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addcategoryLabel">ADD CATEGORY</h5>
+						<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+					</div>
+					
+					<form id="submit_category" action="/expense/addCategory/" method="post" autocomplete="off">
+						{% csrf_token %}
+						<div class="custom-body">
+							<input type="text" class="form-control shadow-none" placeholder="Category" id="category" name='category'>
+						</div>
+						<div class="mt-3 custom-footer">
+							<div class="mt-3 text-end">
+								<button type="submit" class="btn btn-success">Add</button>
+								<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Currency-Modal -->
+		<div class="modal fade " id="currency" tabindex="-1" aria-labelledby="currencyLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content modal-color">
+					<div class="modal-header">
+						<h5 class="modal-title" id="currencyLabel">CHANGE CURRENCY</h5>
+						<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+					</div>
+					
+					<form id="submit_currency" action="/expense/addCurrency/" method="post" autocomplete="off">
+						{% csrf_token %}
+						<div class="custom-body">
+							<div class="form-check">
+								<input class="form-check-input" type="radio" value="fa fa-inr" name="selectedcurrency" id="inr" checked="">
+								<label class="form-check-label" for="INR">
+									<i class="fa fa-inr" aria-hidden="true"></i>(INR)
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio" value="fa fa-dollar" name="selectedcurrency" id="dollar">
+								<label class="form-check-label" for="flexRadioDefault2">
+									<i class="fa fa-dollar" aria-hidden="true"></i>(Dollar)
+								</label>
+							</div>
+							
+							<div class="form-check">
+								<input class="form-check-input" type="radio" value="fa fa-euro" name="selectedcurrency" id="dollar">
+								<label class="form-check-label" for="flexRadioDefault2">
+									<i class="fa fa-eur" aria-hidden="true"></i>(Euro)
+								</label>
+							</div>
+						</div>
+						<div class="mt-3 mb-2 custom-footer">
+							<div class="mt-3 text-end">
+								<button type="submit" class="btn btn-success">Change</button>
+								<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Clear-All-Expenses-Modal -->
+		<div class="modal fade " id="clrexpense" tabindex="-1" aria-labelledby="clrexpenseLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content modal-color">
+					<div class="modal-header">
+						<h5 class="modal-title" id="clrexpenseLabel">Clear</h5>
+						<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+					</div>
+					
+					<form id="submit_clrexpense" action="/expense/editExpense/?id={{user_id}}&type=clearall" method="post" autocomplete="off">
+						{% csrf_token %}
+						
+						<div class="custom-body">
+							<div class="mt-1 py-3 mb-3 px-4">
+								<button type="submit" class="btn btn-danger float-left">Yes</button>
+								<button type="button" class="btn btn-dark float-right" data-bs-dismiss="modal">No</button>
+							</div>
+						</div>
+						<div class="mt-3 mb-5 custom-footer"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- Backup Expense -->
+		<div class="modal fade " id="backupExpense" tabindex="-1" aria-labelledby="backupExpenseLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content modal-color">
+					<div class="modal-header">
+						<h5 class="modal-title" id="backupExpenseLabel">BACKUP EXPENSE</h5>
+						<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+					</div>
+					<form id="" action="/expense/backupData/" method="post" autocomplete="off">
+						{% csrf_token %}
+						<div class="custom-body">
+							<span>Are you sure you want to take backup of all expenses.</span>
+						</div>
+						<div class="mt-3 custom-footer">
+							<div class="mt-3 text-end">
+								<button type="submit" class="btn btn-danger">Backup</button>
+								<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Restore Expense -->
+		<div class="modal fade " id="restoreExpense" tabindex="-1" aria-labelledby="restoreExpenseLabel" aria-hidden="true">
+			<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content modal-color">
+					<div class="modal-header">
+						<h5 class="modal-title" id="restoreExpenseLabel">RESTORE EXPENSE</h5>
+						<button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"><i class=" cus-close-modal fa fa-times " aria-hidden="true"></i></button>
+					</div>
+					<form id="" action="/expense/restoreData/" method="post" autocomplete="off">
+						{% csrf_token %}
+						<div class="custom-body">
+							<span>Are you sure you want to overwrite all expenses.Warning this action is irreversible</span>
+						</div>
+						<div class="mt-3 custom-footer">
+							<div class="mt-3 text-end">
+								<button type="submit" class="btn btn-danger">Restore</button>
+								<button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+</div>
+</div>
+{% endblock %}
+{% block script %}
+
+<script>
+		// for alphanumeric only
+		jQuery.validator.addMethod("alphanumeric", function(value, element) {
+			return this.optional(element) || /^[\w.]+$/i.test(value);
+		}, "Letters, numbers, and underscores only please");
+
+		//budget
+		$("#submit_budget").validate({
+			rules: {
+				budget: {
+					required:true,
+				}
+			},
+			messages: {
+				budget: {
+					required: 'Budget is Required',
+				}
+			}
+		});
+
+		//category
+		$("#submit_category").validate({
+			rules: {
+				category: {
+					required:true,
+				}
+			},
+			messages: {
+				category: {
+					required: 'Category is required',
+				}
+			}
+		});
+
+		//currency
+		$("#submit_currency").validate({
+			rules: {
+				selectedcurrency: {
+					required:true,
+				}
+			},
+			messages: {
+				selectedcurrency: {
+					required: 'Currency is required',
+				}
+			}
+		});
+	</script>
+	{% endblock%}
