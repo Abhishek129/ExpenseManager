@@ -6,3 +6,6 @@
 - cd ExpenseManager
 - pip install -r requirement.txt
 - py manage.py runserver
+
+# Snapshot:
+![Dashboard](image.jpg)
