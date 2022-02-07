@@ -8,5 +8,7 @@
 - py manage.py runserver
 
 # Snapshot:
-![Dashboard](image.png)
+
+##Login
+![Dashboard](Photo/login.png)
 
